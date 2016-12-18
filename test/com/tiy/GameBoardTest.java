@@ -19,7 +19,7 @@ public class GameBoardTest {
 
     @Before
     public void setUp() throws Exception {
-        board = new GameBoard();
+        board = new GameBoard("Jack", "Jill");
     }
 
     @After
@@ -75,7 +75,7 @@ public class GameBoardTest {
         board.placeToken(1, 0, 'X');
         board.placeToken(2, 0, 'X');
         assertEquals(' ', board.getRowWinner());
-        board = new GameBoard();
+        board = new GameBoard("Jack", "Jill");
         board.placeToken(0, 0, 'X');
         board.placeToken(0, 1, 'X');
         board.placeToken(0, 2, 'X');
@@ -88,7 +88,7 @@ public class GameBoardTest {
         board.placeToken(0, 1, 'X');
         board.placeToken(0, 2, 'X');
         assertEquals(' ', board.getColWinner());
-        board = new GameBoard();
+        board = new GameBoard("Jack", "Jill");
         board.placeToken(0, 1, 'X');
         board.placeToken(1, 1, 'X');
         board.placeToken(2, 1, 'X');
@@ -101,7 +101,7 @@ public class GameBoardTest {
         board.placeToken(1, 0, 'X');
         board.placeToken(2, 0, 'X');
         assertEquals(' ', board.getRowWinner());
-        board = new GameBoard();
+        board = new GameBoard("Jack", "Jill");
         board.placeToken(0, 0, 'X');
         board.placeToken(1, 1, 'X');
         board.placeToken(2, 2, 'X');

@@ -5,9 +5,15 @@ package com.tiy;
  */
 public class GameBoard {
     char[][] board;
+    GameRecord record;
 
-    public GameBoard () {
+    public GameBoard (String p1, String p2) {
         board = new char[][] {{' ',' ',' '}, {' ',' ',' '}, {' ',' ',' '}};
+        record = new GameRecord (p1, p2);
+    }
+
+    public GameRecord getRecord () {
+        return record;
     }
 
     public Status getStatus () {
@@ -29,14 +35,17 @@ public class GameBoard {
 
         if (winningToken != ' ') {
             if (winningToken == 'X') {
+                record.setStatus(Status.XWIN);
                 return Status.XWIN;
             } else if (winningToken == 'O') {
+                record.setStatus(Status.OWIN);
                 return Status.OWIN;
             } else {
                 System.out.println("You shouldn't be here. WTF is wrong with you?");
             }
         } else {
             if (this.isFull()) {
+                record.setStatus(Status.TIE);
                 return Status.TIE;
             }
             return Status.LIVE;
@@ -108,6 +117,7 @@ public class GameBoard {
     public void placeToken (int row, int col, char token) throws InvalidMoveException {
         if (board[row][col] == ' ') {
             board[row][col] = token;
+            record.addMove(row*3 + col + 1);
         } else {
             throw new InvalidMoveException("Can't move there, already taken");
         }
@@ -115,10 +125,14 @@ public class GameBoard {
 
     public String toString () {
         return board[0][0] + "|" + board[0][1] + "|" + board[0][2] + "\n" +
-                "-----\n" +
-                board[1][0] + "|" + board[1][1] + "|" + board[1][2] + "\n" +
-                "-----\n" +
-                board[2][0] + "|" + board[2][1] + "|" + board[2][2];
+               "-----\n" +
+               board[1][0] + "|" + board[1][1] + "|" + board[1][2] + "\n" +
+               "-----\n" +
+               board[2][0] + "|" + board[2][1] + "|" + board[2][2];
 
+    }
+
+    public void writeToFile () {
+        record.writeToFile();
     }
 }

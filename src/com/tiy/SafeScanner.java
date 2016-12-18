@@ -21,15 +21,20 @@ public class SafeScanner {
         scanner = new Scanner (sysIn);
     }
 
+
+    //TODO fix this class to never use nextInt or nextDouble etc
     public int nextIntSafe () {
         System.out.println("Please input an integer:");
         int response = 0;
         try {
-            response = scanner.nextInt();
+//            response = scanner.nextInt();
+            response = Integer.parseInt(scanner.nextLine());
         } catch (InputMismatchException e) {
             System.out.println("You did not enter an integer.");
             scanner.next();
             return nextIntSafe();
+        } catch (NumberFormatException ex) {
+            System.out.println("You did not enter an integer.");
         }
         return response;
     }
@@ -89,8 +94,8 @@ public class SafeScanner {
     }
 
     public String nextStringSafe () {
-        //System.out.println("Please input a string");
-        return scanner.next();
+        //return scanner.next();
+        return scanner.nextLine();
     }
 
     public boolean nextBoolSafe () {
