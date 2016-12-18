@@ -19,9 +19,24 @@ public class SimpleServer implements Runnable {
     final static String CONNECTION_READY = "[[CONN_READY]]";
     final static String CONNECTION_END = "[[CONN_END]]";
     final static String CONNECTION_INVALID_START = "[[CONN_INVALID_START]]";
+
+    ConnectionHandler gameConnectionHandler;
+    GameRunner gameRunner;
     ServerSocket serverListener;
 
     public SimpleServer() {
+        gameConnectionHandler = null;
+        try {
+            serverListener = new ServerSocket(PORT_NUMBER);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+            serverListener = null;
+        }
+    }
+
+    public SimpleServer(GameRunner gameRunner) {
+        gameConnectionHandler = null;
+        this.gameRunner = gameRunner;
         try {
             serverListener = new ServerSocket(PORT_NUMBER);
         } catch (IOException exception) {
@@ -38,6 +53,7 @@ public class SimpleServer implements Runnable {
 
                 BufferedReader inputFromClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                 PrintWriter outputToClient = new PrintWriter(clientSocket.getOutputStream(), true);
+                /*
                 String firstLine = inputFromClient.readLine();
                 if (firstLine == null || firstLine.equals(SHUTDOWN_MESSAGE)) {
                     outputToClient.println("!!! Server Shutting Down !!!");
@@ -49,12 +65,17 @@ public class SimpleServer implements Runnable {
                     // TODO
 //                    throw new Exception("create a new unit test to make sure this actually continues and doesn't start a new thread");
                 }
-
-                new Thread(
-                        new ConnectionHandler(clientSocket, inputFromClient, outputToClient)
-                ).start();
+                */
+                if (gameConnectionHandler == null) {
+                    gameConnectionHandler = new ConnectionHandler(clientSocket, inputFromClient, outputToClient, gameRunner);
+                    new Thread(gameConnectionHandler).start();
+                } else {
+                    new Thread(
+                            new ConnectionHandler(clientSocket, inputFromClient, outputToClient)
+                    ).start();
+                }
             }
-            System.out.println("**** Done waiting for connections - shutting down");
+            //System.out.println("**** Done waiting for connections - shutting down");
         } catch (IOException exception) {
             exception.printStackTrace();
         }

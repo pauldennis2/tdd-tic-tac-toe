@@ -16,6 +16,8 @@ public class SimpleClient {
     PrintWriter socketOutput;
     BufferedReader socketInput;
 
+    GameRunner gameRunner;
+
     public SimpleClient(String serverIP, int portNumber) {
         this(serverIP, portNumber, false);
     }
@@ -40,12 +42,25 @@ public class SimpleClient {
         }
     }
 
+    public SimpleClient(String serverIP, int portNumber, GameRunner gameRunner) {
+        try {
+            clientSocket = new Socket(serverIP, portNumber);
+            socketOutput = new PrintWriter(clientSocket.getOutputStream(), true);
+            socketInput = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+        this.gameRunner = gameRunner;
+    }
+
     public String sendMessage(String message) throws IOException {
         System.out.println("Sending message to server: " + message);
         socketOutput.println(message);
         String response = socketInput.readLine();
         System.out.println("Received message from server: " + response);
-        return response;
+        //return response;
+        System.out.println(gameRunner);
+        return gameRunner.receiveInfoFromNetworkAndRespond(response);
     }
 
     public void closeClient() throws IOException {

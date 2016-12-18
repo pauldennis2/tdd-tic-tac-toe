@@ -2,7 +2,6 @@ package com.tiy;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
@@ -14,6 +13,7 @@ public class ConnectionHandler implements Runnable {
     // this is how we read from the client
     private BufferedReader inputFromClient;
     private PrintWriter outputToClient;
+    private GameRunner gameRunner;
 
     public ConnectionHandler(Socket clientSocket,
 
@@ -22,6 +22,13 @@ public class ConnectionHandler implements Runnable {
         this.clientSocket = clientSocket;
         this.inputFromClient = inputFromClient;
         this.outputToClient = outputToClient;
+    }
+
+    public ConnectionHandler (Socket clientSocket, BufferedReader inputFromClient, PrintWriter outputToClient, GameRunner gameRunner) {
+        this.clientSocket = clientSocket;
+        this.inputFromClient = inputFromClient;
+        this.outputToClient = outputToClient;
+        this.gameRunner = gameRunner;
     }
 
     public void run() {
@@ -39,7 +46,21 @@ public class ConnectionHandler implements Runnable {
                     break;
                 } else {
                     // this is where I do actual work with the message from the client
-                    outputToClient.println("ECHO::" + inputLine);
+                    //System.out.println("I'm echoing " + inputLine);
+                    //outputToClient.println("ECHO::" + inputLine);
+                    /*try {
+                        int moveLocation = Integer.parseInt(inputLine);
+                        int responseLocation = -1;
+                        do {
+                            Random random = new Random();
+                            responseLocation = random.nextInt(9);
+                            responseLocation++;
+                        } while (responseLocation == moveLocation); //A do-while loop just for you Dom
+                        outputToClient.println(responseLocation);
+                    } catch (NumberFormatException ex) {
+                        System.out.println("User name = " + inputLine);
+                    }*/
+                    outputToClient.println(gameRunner.receiveInfoFromNetworkAndRespond(inputLine));
                 }
             }
             System.out.println("**** Connection Handler closing!");
